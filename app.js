@@ -32,6 +32,18 @@ return {
     getData: function(){
         return data;
     },
+    getProductById: function(id){
+        let product = null;
+
+        data.products.forEach(function(prd){
+            if(prd.id == id){
+                product = prd;
+            }
+        })
+
+        return product;
+    },
+
     addProduct: function(name,price){
         let id;
 
@@ -90,9 +102,7 @@ const UIController = (function(){
                         <td>${prd.name}</td>
                         <td>${prd.price}</td>
                         <td class="text-right">
-                            <button type="submit" class="btn btn-warning btn-sm">
-                                    <i class="far fa-edit"></i>  
-                            </button>
+                            <i class="far fa-edit edit-product"></i>  
                         </td>
                     </tr>
                 
@@ -113,9 +123,7 @@ const UIController = (function(){
                 <td>${prd.name}</td>
                 <td>${prd.price}</td>
                 <td class="text-right">
-                    <button type="submit" class="btn btn-warning btn-sm">
-                            <i class="far fa-edit"></i>  
-                    </button>
+                     <i class="far fa-edit edit-product"></i>  
                 </td>
             </tr>
             `;
@@ -154,6 +162,10 @@ const App = (function(ProductCtrl, UICtrl){
         // add product event 
         document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
 
+        // edit product 
+        document.querySelector(UISelectors.productList).addEventListener('click', productEditSubmit);
+
+
     }
 
     const productAddSubmit = function(e){
@@ -182,6 +194,26 @@ const App = (function(ProductCtrl, UICtrl){
         
 
         e.preventDefault();
+    }
+
+    const productEditSubmit = function(e){
+
+        if(e.target.classList.contains('edit-product')){
+
+            const id = e.target.parentNode.previousElementSibling.previousElementSibling.previousElementSibling.textContent ;// html ögesini yazdırır.
+
+
+           // get selected product
+           const product = ProductCtrl.getProductById(id);
+           console.log(product);
+
+        }
+
+    
+
+        e.preventDefault();
+
+
     }
 
     return{
