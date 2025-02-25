@@ -1,11 +1,6 @@
 // Stroge Controller
 const StorageController = (function(){
-
 })();
-
-
-
-
 
 
 // Product (ürün) Controller
@@ -43,7 +38,12 @@ return {
 
         return product;
     },
-
+    setCurrentProduct:function(product){
+        data.selectedProduct = product;
+    },
+    getCurrentProduct:function(){
+        return data.selectedProduct;
+    },
     addProduct: function(name,price){
         let id;
 
@@ -82,6 +82,9 @@ const UIController = (function(){
     const Selectors = {
         productList : "#item-list",
         addButton : '.addBtn',
+        updateButton : '.updateBtn',
+        cancelButton : '.cancelBtn',
+        deleteButton : '.deleteBtn',
         productName : '#productName',
         productPrice : '#productPrice',
         productCard : '#productCard',
@@ -89,6 +92,7 @@ const UIController = (function(){
         totalDolar: '#total-dolar'
 
     };
+
 
     return{
         createProductList: function(products){
@@ -143,7 +147,35 @@ const UIController = (function(){
             document.querySelector(Selectors.totalDolar).textContent = total;
             document.querySelector(Selectors.totalTL).textContent = total*4.5;
 
-        }
+        },
+        addProductToFrom:function(){
+            const selectedProduct = ProductController.getCurrentProduct();
+            document.querySelector(Selectors.productName).value = selectedProduct.name;
+            document.querySelector(Selectors.productPrice).value = selectedProduct.price;
+        },
+        addingState:function() { 
+            
+            UIController.clearInputs();
+            document.querySelector(Selectors.addButton).style.display='inline';
+            document.querySelector(Selectors.updateButton).style.display='none';
+            document.querySelector(Selectors.deleteButton).style.display='none';
+            document.querySelector(Selectors.cancelButton).style.display='none';
+
+        },
+        editState:function(tr) { 
+
+            const parent = tr.parentNode;
+
+            for(let i=0; i< parent.children.length; i++){
+                parent.children[i].classList.remove('bg-warning');
+            }
+
+            tr.classList.add('bg-warning');
+            document.querySelector(Selectors.addButton).style.display='none';
+            document.querySelector(Selectors.updateButton).style.display='inline';
+            document.querySelector(Selectors.deleteButton).style.display='inline';
+            document.querySelector(Selectors.cancelButton).style.display='inline';
+        },
     }
 })(); 
 
@@ -152,9 +184,9 @@ const UIController = (function(){
 
 
 // App Controller, ana mödülümüz
-const App = (function(ProductCtrl, UICtrl){
+const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
 
-    const UISelectors = UIController.getSelectors();
+    const UISelectors = UICtrl.getSelectors();
 
     //Load Event Listeners
     const loadEventListeners = function(){
@@ -205,7 +237,15 @@ const App = (function(ProductCtrl, UICtrl){
 
            // get selected product
            const product = ProductCtrl.getProductById(id);
-           console.log(product);
+
+           //set current product
+            ProductCtrl.setCurrentProduct(product);
+
+            // add product to UI
+            UICtrl.addProductToFrom();
+
+            UICtrl.editState(e.target.parentNode.parentNode);
+           
 
         }
 
@@ -218,7 +258,11 @@ const App = (function(ProductCtrl, UICtrl){
 
     return{
         init: function(){
-            //console.log('starting app...');
+            console.log('starting app...');
+
+            UICtrl.addingState();
+        
+
             const products = ProductCtrl.getProducts();
            
             if(products.length == 0){
