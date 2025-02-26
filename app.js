@@ -104,7 +104,7 @@ const UIController = (function(){
                     <tr>
                         <td>${prd.id}</td>
                         <td>${prd.name}</td>
-                        <td>${prd.price}</td>
+                        <td>${prd.price} $</td>
                         <td class="text-right">
                             <i class="far fa-edit edit-product"></i>  
                         </td>
@@ -113,7 +113,7 @@ const UIController = (function(){
                 `;
             });
 
-            document.querySelector(Selectors.productList).innerHTML += html;
+            document.querySelector(Selectors.productList).innerHTML = html;
         },
         getSelectors : function(){
             return Selectors;
@@ -154,7 +154,7 @@ const UIController = (function(){
             document.querySelector(Selectors.productPrice).value = selectedProduct.price;
         },
         addingState:function() { 
-            
+
             UIController.clearInputs();
             document.querySelector(Selectors.addButton).style.display='inline';
             document.querySelector(Selectors.updateButton).style.display='none';
@@ -262,7 +262,6 @@ const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
 
             UICtrl.addingState();
         
-
             const products = ProductCtrl.getProducts();
            
             if(products.length == 0){
@@ -270,16 +269,17 @@ const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
             }else{
                 UIController.createProductList(products);
             }
+           
+            // show total
+            const total = ProductCtrl.getTotal();  // burada toplam tutarı alıyoruz
+            UICtrl.showTotal(total);
 
-            
+
             // load event listeners
             loadEventListeners();
 
         }
     }
-
-
-
-})( ProductController,  UIController );
+})( ProductController, UIController );
 
 App.init();

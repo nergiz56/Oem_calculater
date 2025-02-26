@@ -1,9 +1,0 @@
-.form-row {
-    display: flex;          /* Flex ile yatay hizalama */
-    gap: 10px;              /* İki input arasında boşluk */
-    width: 100%;            /* Genişlik ayarı */
-}
-
-.form-group {
-    flex: 1;                /* Eşit genişlik */
-}
