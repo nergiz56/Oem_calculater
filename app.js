@@ -56,6 +56,18 @@ return {
         data.products.push(newProduct);
         return newProduct;
     },
+    updatedProduct: function(name, price){
+        let product = null;
+
+        data.products.forEach(function(prd){
+            if(prd.id == data.selectedProduct.id){
+                prd.name = name;
+                prd.price = price;
+                product = prd;
+            }
+        });
+        return product;
+    },
     getTotal : function(){
         let total = 0;
 
@@ -135,6 +147,9 @@ const UIController = (function(){
 
             
         },
+        updateProduct:function(prd){
+
+        },
         clearInputs: function(){// burada eleman eklendikten sonra inputun içini temizliyoruz.
             document.querySelector(Selectors.productName).value='';
             document.querySelector(Selectors.productPrice).value='';
@@ -194,8 +209,12 @@ const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
         // add product event 
         document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
 
-        // edit product 
-        document.querySelector(UISelectors.productList).addEventListener('click', productEditSubmit);
+        // edit product click
+        document.querySelector(UISelectors.productList).addEventListener('click', productEditClick);
+
+        // edit product submit
+        document.querySelector(UISelectors.updateButton).addEventListener('click', editProductSubmit);
+
 
 
     }
@@ -228,7 +247,7 @@ const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
         e.preventDefault();
     }
 
-    const productEditSubmit = function(e){
+    const productEditClick = function(e){
 
         if(e.target.classList.contains('edit-product')){
 
@@ -255,6 +274,23 @@ const App = (function(ProductCtrl, UICtrl){ // ürün controlü ve UI kontrolu
 
 
     }
+
+    const editProductSubmit = function(e){
+
+        const productName = document.querySelector(UISelectors.productName).value;
+        const productPrice = document.querySelector(UISelectors.productPrice).value;
+        
+        if(productName !== '' && productPrice !== '' ){
+             
+            // update product
+            const updatedProduct = ProductCtrl.updatedProduct(productName, productPrice);
+
+            // update ui
+            let item = UICtrl.updatedProduct(updatedProduct);
+        }
+
+        e.preventDefault();
+    }  
 
     return{
         init: function(){
